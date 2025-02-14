@@ -1,21 +1,15 @@
+import { use, useState } from "react";
+import { Link } from "react-router-dom";
+
 export default function SignIn() {
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+    });
     return (
         <>
-            {/*
-          This example requires updating your template:
-  
-          ```
-          <html class="h-full bg-white">
-          <body class="h-full">
-          ```
-        */}
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <img
-                        alt="Your Company"
-                        src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                        className="mx-auto h-10 w-auto"
-                    />
                     <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
                         Sign in to your account
                     </h2>
@@ -38,6 +32,13 @@ export default function SignIn() {
                                     required
                                     autoComplete="email"
                                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                                    onChange={(e) => {
+                                        setFormData({
+                                            ...formData,
+                                            email: e.target.value,
+                                        });
+                                    }}
+                                    value={formData.email}
                                 />
                             </div>
                         </div>
@@ -66,6 +67,13 @@ export default function SignIn() {
                                     type="password"
                                     required
                                     autoComplete="current-password"
+                                    onChange={(e) => {
+                                        setFormData({
+                                            ...formData,
+                                            password: e.target.value,
+                                        });
+                                    }}
+                                    value={formData.password}
                                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                                 />
                             </div>
@@ -83,12 +91,12 @@ export default function SignIn() {
 
                     <p className="mt-10 text-center text-sm/6 text-gray-500">
                         Not a member?{" "}
-                        <a
-                            href="#"
+                        <Link
+                            to="/register"
                             className="font-semibold text-indigo-600 hover:text-indigo-500"
                         >
                             Register here
-                        </a>
+                        </Link>
                     </p>
                 </div>
             </div>
