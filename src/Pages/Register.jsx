@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { register } from "../Store/userSlice.js";
+
 export default function Register() {
     const [formData, setFormData] = useState({
         email: "",
@@ -7,9 +11,22 @@ export default function Register() {
         username: "",
     });
     const [profile, setProfile] = useState("");
+
+    const user = useSelector((state) => state.user.value);
+    const dispatch = useDispatch();
     const hanldeSubmit = async (e) => {
         e.preventDefault();
-        alert("Registered");
+        try {
+            const res = await axios.post(
+                "http://localhost:5000/api/register",
+                formData
+            );
+            console.log(res);
+            dispatch(register(res.data));
+            alert("Registered");
+        } catch (error) {
+            alert("failed to register, error: " + JSON.stringify(error));
+        }
     };
     return (
         <>
@@ -145,6 +162,9 @@ export default function Register() {
                             Login here
                         </Link>
                     </p>
+                </div>
+                <div>
+                    <p>User : {JSON.stringify(user)}</p>
                 </div>
             </div>
         </>
