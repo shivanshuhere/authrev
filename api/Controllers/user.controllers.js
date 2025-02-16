@@ -12,12 +12,12 @@ const generateAccessAndRefreshToken = async (user) => {
 
 export async function register(req, res) {
     const { email, password, username } = req.body;
-    const profile = req.file.path;
-    console.log("profile :", profile);
+    const profile = req?.file?.path;
+    console.log("profile :", req);
 
     if (
         [email, password, username, profile].some(
-            (filed) => filed.trim() === ""
+            (filed) => filed?.trim() === ""
         )
     )
         throw new ErrorResponse(400, "All fields are required");
@@ -69,12 +69,12 @@ export async function login(req, res) {
             secure: true,
             sameSite: "none",
         };
-        user = User.findById(user._id).select("-password");
+        user = await User.findById(user._id).select("-password");
         return res
             .status(200)
-            .json(new ApiResponse(200, "User registered", user))
-            .setCookie("accessToken", accessToken, options)
-            .setCookie("refreshToken", refreshToken, options);
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options)
+            .json(new ApiResponse(200, "User registered", user));
     } catch (error) {
         console.log("error: ", error);
         res.status(400).json(

@@ -10,22 +10,40 @@ export default function Register() {
         password: "",
         username: "",
     });
-    const [profile, setProfile] = useState("");
+    const [profile, setProfile] = useState(null);
 
     const user = useSelector((state) => state.user.value);
     const dispatch = useDispatch();
+
+    const data = new FormData();
+    data.append("username", formData.username);
+    data.append("email", formData.email);
+    data.append("password", formData.password);
+    data.append("profile", profile);
     const hanldeSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(
-                "http://localhost:5000/api/register",
-                formData
-            );
+            // const res = await axios.post(
+            //     `http://localhost:5000/api/register`,
+            //     data,
+            //     {
+            //         headers: {
+            //             "Content-Type": "multipart/form-data",
+            //         },
+            //     }
+            // );
+            const res = await fetch("http://localhost:5000/api/register", {
+                method: "POST",
+                body: data,
+            }).then((res) => {
+                return res.json();
+            });
             console.log(res);
             dispatch(register(res.data));
             alert("Registered");
         } catch (error) {
             alert("failed to register, error: " + JSON.stringify(error));
+            console.log("failed to register, error: ", JSON.stringify(error));
         }
     };
     return (
@@ -38,11 +56,7 @@ export default function Register() {
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form
-                        className="space-y-6"
-                        onSubmit={hanldeSubmit}
-                        encType="multipart/form-data"
-                    >
+                    <form className="space-y-6" onSubmit={hanldeSubmit}>
                         <div>
                             <label
                                 htmlFor="email"
