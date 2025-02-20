@@ -3,6 +3,7 @@ import fs from "fs";
 import ApiResponse from "../Utils/ApiResponse.js";
 import ErrorResponse from "../Utils/ErrorResponse.js";
 import User from "../Models/user.model.js";
+import transport from "../Utils/SendMail.js";
 export function test(req, res) {
     try {
         const { data } = req?.body;
@@ -61,7 +62,9 @@ export async function generatePdf(req, res) {
         });
         doc.moveDown();
 
-        // img
+        // not working
+        /*
+        img
         doc.image(
             "../public/imgages/upload/82949448bb396bbac7b95b04394d402d.jpg",
             doc.x,
@@ -73,6 +76,7 @@ export async function generatePdf(req, res) {
                 width: 100,
             }
         );
+        */
         doc.moveDown();
 
         // footer
@@ -85,5 +89,34 @@ export async function generatePdf(req, res) {
         return res
             .status(500)
             .json(new ApiResponse(500, "Error generating PDF"));
+    }
+}
+
+export async function sendMail(req, res) {
+    try {
+        const options = {
+            from: "ks7876555@gmail.com",
+            to: "try.shivanshu@gmail.com",
+            subject: "Test mail",
+            text: "This is a test mail",
+        };
+        await transport.sendMail(options, (err, info) => {
+            if (err) {
+                console.log(err);
+            }
+            console.log(info);
+            return res.status(200).json(new ApiResponse(200, "Mail sent"));
+        });
+    } catch (error) {
+        console.log("error: ", error);
+        return res
+            .status(400)
+            .json(
+                new ErrorResponse(
+                    400,
+                    "Something went wrong while sending mail",
+                    error
+                )
+            );
     }
 }
