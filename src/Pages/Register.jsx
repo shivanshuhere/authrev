@@ -20,31 +20,15 @@ export default function Register() {
     data.append("email", formData.email);
     data.append("password", formData.password);
     data.append("profile", profile);
+
+    const handelFileChange = (event) => {
+        setProfile(event.target.value);
+    };
+
     const hanldeSubmit = async (e) => {
         e.preventDefault();
         try {
-            // const res = await axios.post(
-            //     `http://localhost:5000/api/register`,
-            //     data,
-            //     {
-            //         headers: {
-            //             "Content-Type": "multipart/form-data",
-            //         },
-            //     }
-            // );
-            const res = await fetch("http://localhost:5000/api/register", {
-                method: "POST",
-                body: data,
-            }).then((res) => {
-                return res.json();
-            });
-            console.log(res);
-            dispatch(register(res.data));
-            alert("Registered");
-        } catch (error) {
-            alert("failed to register, error: " + JSON.stringify(error));
-            console.log("failed to register, error: ", JSON.stringify(error));
-        }
+        } catch (error) {}
     };
     return (
         <>
@@ -56,7 +40,13 @@ export default function Register() {
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form className="space-y-6" onSubmit={hanldeSubmit}>
+                    <form
+                        className="space-y-6"
+                        method="POST"
+                        action={"http://localhost:5000/api/register"}
+                        encType="multipart/form-data"
+                        // onSubmit={hanldeSubmit}
+                    >
                         <div>
                             <label
                                 htmlFor="email"
@@ -148,9 +138,7 @@ export default function Register() {
                                     name="profile"
                                     type="file"
                                     required
-                                    onChange={(e) => {
-                                        setProfile(e.target.value);
-                                    }}
+                                    onChange={handelFileChange}
                                     value={profile}
                                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                                 />

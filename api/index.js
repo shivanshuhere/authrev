@@ -26,5 +26,8 @@ dbConnect()
 
 //routes
 import authRoute from "./Routes/auth.routes.js";
-
+import testRoutes from "./Routes/test.routes.js";
 app.use("/api", authRoute);
+
+// test pdfkit
+app.use("/test", testRoutes);

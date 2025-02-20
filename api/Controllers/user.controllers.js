@@ -12,8 +12,8 @@ const generateAccessAndRefreshToken = async (user) => {
 
 export async function register(req, res) {
     const { email, password, username } = req.body;
-    const profile = req?.file?.path;
-    console.log("profile :", req);
+    const profile = req?.file?.path || req?.files[0]?.path;
+    console.log("profile :", profile);
 
     if (
         [email, password, username, profile].some(
@@ -28,6 +28,7 @@ export async function register(req, res) {
         if (userExists) {
             throw new ErrorResponse(400, "User already exists");
         }
+        console.log("profile :", profile);
         user = await User.create({
             email,
             password,
@@ -81,6 +82,37 @@ export async function login(req, res) {
             new ErrorResponse(
                 400,
                 "Something went wrong while logging in : ",
+                error
+            )
+        );
+    }
+}
+
+export async function logout(req, res) {
+    const { email } = req.body;
+    let user;
+    try {
+        user = await User.findOneAndUpdate(
+            { email },
+            {
+                $set: {
+                    refreshToken: null,
+                },
+            }
+        );
+
+        await user.save();
+        return res
+            .status(200)
+            .clearCookie("accessToken")
+            .clearCookie("refreshToken")
+            .json(new ApiResponse(200, "User logged out"));
+    } catch (error) {
+        console.log("error: ", error);
+        res.status(400).json(
+            new ErrorResponse(
+                400,
+                "Something went wrong while logging out : ",
                 error
             )
         );
